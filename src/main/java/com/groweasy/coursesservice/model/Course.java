@@ -30,18 +30,9 @@ public class Course {
     @Column(name="price", length =6, nullable=false)
     private String price;
 
-    @Column(name="rating", length =3, nullable=false)
-    private String rating;
-
     @Column(name="duration", length =3, nullable=false)
     private String duration;
 
-    @Column(name="date", length =30, nullable=false)
-    private String date;
-
-    @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    //@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-    private Category category;
+    @Column(name="category", nullable=false)
+    private String category;
 }
