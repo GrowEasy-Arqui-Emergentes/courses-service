@@ -1,8 +1,13 @@
 package com.groweasy.coursesservice.controller;
 
+import com.groweasy.coursesservice.controller.request.CoursesRequest;
+import com.groweasy.coursesservice.controller.request.UserCoursesRequest;
 import com.groweasy.coursesservice.model.Course;
+import com.groweasy.coursesservice.model.UserCourse;
 import com.groweasy.coursesservice.repository.CoursesRepository;
 import com.groweasy.coursesservice.service.CoursesService;
+import com.groweasy.coursesservice.service.UserCourseService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +21,8 @@ import java.util.List;
 public class CoursesController {
     @Autowired
     private CoursesService coursesService;
+    @Autowired
+    private UserCourseService userCourseService;
     private final CoursesRepository coursesRepository;
 
     public CoursesController(CoursesRepository coursesRepository) {
@@ -42,7 +49,7 @@ public class CoursesController {
 
     //@PostMapping("/courses")
     @PostMapping
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
+    public ResponseEntity<Course> createCourse(@RequestBody CoursesRequest course) {
         try {
             validateCourse(course);
             //existsByNameAndPrice(course);
@@ -52,8 +59,18 @@ public class CoursesController {
         }
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Course>> getCoursesByUserId(@PathVariable("userId") Long userId) {
+        return new ResponseEntity<List<Course>>(userCourseService.getCoursesByUserId(userId), HttpStatus.OK);
+    }
 
-    private void validateCourse(Course course){
+    @PostMapping("/user/add")
+    public ResponseEntity<UserCourse> addUserCourse(@RequestBody UserCoursesRequest userCoursesRequest) {
+        return new ResponseEntity<UserCourse>(userCourseService.addUserCourse(userCoursesRequest.getUserId(), userCoursesRequest.getCourseId()), HttpStatus.CREATED);
+    }
+
+
+    private void validateCourse(CoursesRequest course){
         if(course.getName() == null || course.getName().isEmpty()){
             throw new RuntimeException("El nombre del curso es obligatorio");
         }
@@ -86,14 +103,6 @@ public class CoursesController {
             throw new RuntimeException("El precio del curso no puede tener más de 6 caracteres");
         }
 
-        if(course.getRating() == null || course.getRating().isEmpty()){
-            throw new RuntimeException("El rating del curso es obligatorio");
-        }
-
-        if(course.getRating().length() > 3){
-            throw new RuntimeException("El rating del curso no puede tener más de 3 caracteres");
-        }
-
         if(course.getDuration() == null || course.getDuration().isEmpty()){
             throw new RuntimeException("La duración del curso es obligatoria");
         }
@@ -101,15 +110,6 @@ public class CoursesController {
         if(course.getDuration().length() > 3) {
             throw new RuntimeException("La duración del curso no puede tener más de 3 caracteres");
         }
-
-        if(course.getDate() == null || course.getDate().isEmpty()){
-            throw new RuntimeException("La fecha del curso es obligatoria");
-        }
-
-        if(course.getDate().length() > 30){
-            throw new RuntimeException("La fecha del curso no puede tener más de 30 caracteres");
-        }
-
 
     }
 }

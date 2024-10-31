@@ -1,5 +1,6 @@
 package com.groweasy.coursesservice.service.impl;
 
+import com.groweasy.coursesservice.controller.request.CoursesRequest;
 import com.groweasy.coursesservice.model.Course;
 import com.groweasy.coursesservice.repository.CoursesRepository;
 import com.groweasy.coursesservice.service.CoursesService;
@@ -13,8 +14,15 @@ public class CoursesServiceImpl implements CoursesService {
 
 
     @Override
-    public Course createCourse(Course course) {
-        return coursesRepository.save(course);
+    public Course createCourse(CoursesRequest course) {
+        Course courseToSave = new Course();
+        courseToSave.setName(course.getName());
+        courseToSave.setImage(course.getImage());
+        courseToSave.setDescription(course.getDescription());
+        courseToSave.setPrice(course.getPrice());
+        courseToSave.setDuration(course.getDuration());
+        courseToSave.setCategory(course.getCategory());
+        return coursesRepository.save(courseToSave);
     }
 
     @Override
