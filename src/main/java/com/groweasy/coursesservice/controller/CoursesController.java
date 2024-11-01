@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/grow-easy")
-@RequestMapping("/courses")
+@RequestMapping("/api/v1")
 public class CoursesController {
     @Autowired
     private CoursesService coursesService;
@@ -29,14 +28,12 @@ public class CoursesController {
         this.coursesRepository = coursesRepository;
     }
 
-    //@GetMapping("/courses")
-    @GetMapping
+    @GetMapping("/courses")
     public ResponseEntity<List<Course>> getAllCourses() {
         return new ResponseEntity<List<Course>>(coursesRepository.findAll(), HttpStatus.OK);
     }
 
-    //@GetMapping("/courses/{id}")
-    @GetMapping("/{id}")
+    @GetMapping("/courses/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable("id") Long id) {
         Course course =  coursesService.getCourseById(id);
         if(null == course){
@@ -47,8 +44,7 @@ public class CoursesController {
         //return new ResponseEntity<Course>(coursesRepository.findById(id).get(), HttpStatus.OK);
     }
 
-    //@PostMapping("/courses")
-    @PostMapping
+    @PostMapping("/courses")
     public ResponseEntity<Course> createCourse(@RequestBody CoursesRequest course) {
         try {
             validateCourse(course);
@@ -59,12 +55,12 @@ public class CoursesController {
         }
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/courses/user/{userId}")
     public ResponseEntity<List<Course>> getCoursesByUserId(@PathVariable("userId") Long userId) {
         return new ResponseEntity<List<Course>>(userCourseService.getCoursesByUserId(userId), HttpStatus.OK);
     }
 
-    @PostMapping("/user/add")
+    @PostMapping("/courses/user/add")
     public ResponseEntity<UserCourse> addUserCourse(@RequestBody UserCoursesRequest userCoursesRequest) {
         return new ResponseEntity<UserCourse>(userCourseService.addUserCourse(userCoursesRequest.getUserId(), userCoursesRequest.getCourseId()), HttpStatus.CREATED);
     }
